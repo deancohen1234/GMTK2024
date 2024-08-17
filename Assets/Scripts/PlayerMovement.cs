@@ -65,6 +65,11 @@ public class PlayerMovement : MonoBehaviour
         Body.velocity = Velocity;
     }
 
+    public void SetMaxSpeed(float NewMaxSpeed)
+    {
+        Speed = NewMaxSpeed;
+    }
+
     private Vector3 GetMoveVelocity(Vector3 CurrentVelocity)
     {
         SetGroundParams();
