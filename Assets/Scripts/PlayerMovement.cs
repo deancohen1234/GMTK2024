@@ -117,9 +117,6 @@ public class PlayerMovement : MonoBehaviour
         float yDiff = (Body.position.y - (projectedGroundHeight + HoverHeight));
 
         float restoringVelocity = -SpringConstant * yDiff * Time.fixedDeltaTime;
-        float dampening = -Dampening * CurrentVelocity.y;
-
-        //restoringVelocity *= Dampening;
 
         return GroundParams.Normal * restoringVelocity;
     }
