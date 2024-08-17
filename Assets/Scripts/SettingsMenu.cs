@@ -26,11 +26,6 @@ public class SettingsMenu : MonoBehaviour
     public void UpdateSensitivity(float NewValue)
     {
         PlayerPrefs.SetFloat(MOUSE_SENSITIVITY_PREF_KEY, NewValue);
-
-        if (CameraSensitivity)
-        {
-            CameraSensitivity.UpdateSensitivity(NewValue);
-        }
     }
 
     private void LoadSavedSliderValues()
