@@ -114,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.Raycast(Body.position + Vector3.up * CheckAheadHeight, (tiltDownRotation * GroundedForward), out hit, lateralDistance, GroundCheckMask))
         {
-            if (hit.point.y > projectedGroundHeight)
+            if (hit.point.y > projectedGroundHeight && Vector3.Dot(hit.normal, Vector3.up) > 0.25f)
             {
                 projectedGroundHeight = hit.point.y;
             }
