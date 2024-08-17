@@ -9,7 +9,8 @@ public enum BoostCycle
     Idle = 0,
     Held = 1,
     Success = 2,
-    Stalled = 3
+    Stalled = 3,
+    NotRunning = 4
 }
 
 public class SpeedBooster : MonoBehaviour
@@ -27,6 +28,7 @@ public class SpeedBooster : MonoBehaviour
     public Color BoostFailed = Color.red;
     public Color BoostSuccess = Color.blue;
     public Color BoostInProgress = Color.yellow;
+    public Color BoostOff = Color.grey;
 
     //in seconds
     public float BoostChangeDuration = 1.0f;
@@ -44,9 +46,7 @@ public class SpeedBooster : MonoBehaviour
     {
         PlayerMovement = GetComponent<PlayerMovement>();
 
-        BoostMeterTweener = DOTween.To(() => BoostMeterValue, x => BoostMeterValue = x, 1.0f, BoostChangeDuration).SetLoops(-1);
-        BoostMeterTweener.OnComplete(OnBoostMeterComplete);
-        BoostMeterTweener.SetEase(BoostEase);
+        BoostCycle = BoostCycle.NotRunning;
     }
 
     // Update is called once per frame
@@ -63,10 +63,41 @@ public class SpeedBooster : MonoBehaviour
             RowSlider.value = BoostMeterValue;
         }
     }
-    
+
+    private void StartCycle()
+    {
+        BoostMeterTweener = DOTween.To(() => BoostMeterValue, x => BoostMeterValue = x, 1.0f, BoostChangeDuration).SetLoops(-1);
+        BoostMeterTweener.OnStepComplete(OnBoostMeterComplete);
+        BoostMeterTweener.SetEase(BoostEase);
+
+        BoostCycle = BoostCycle.Idle;
+
+    }
+
+    private void StopCycle()
+    {
+        BoostMeterTweener.Kill();
+        BoostMeterTweener = null;
+
+        BoostCycle = BoostCycle.NotRunning;
+    }
+
     private void UpdateBoostCycle(bool isPressingMouseButton, bool isReleasingMouseButton)
     {
-        Debug.Log("On Down: " + isPressingMouseButton);
+        //Debug.Log("Cycle: " + BoostCycle);
+
+        //if boost cycle isn't running then start it when button is pressed
+        if (BoostCycle == BoostCycle.NotRunning)
+        {
+            if (isPressingMouseButton)
+            {
+                //start boost at minimum press window
+                StartCycle();
+                //Debug.Log("Starting");
+                BoostMeterValue = BoostPressWindow.x;
+            }
+        }
+
         //button is NOT held and player is starting hold
         if (BoostCycle != BoostCycle.Held && isPressingMouseButton)
         {
@@ -74,7 +105,7 @@ public class SpeedBooster : MonoBehaviour
             if (BoostMeterValue >= BoostPressWindow.x && BoostMeterValue <= BoostPressWindow.y)
             {
                 //boost started
-                Debug.Log("Boost Started");
+                //Debug.Log("Boost Started");
                 BoostCycle = BoostCycle.Held;
             }
 
@@ -82,7 +113,7 @@ public class SpeedBooster : MonoBehaviour
             else
             {
                 //boost set back to idle
-                Debug.Log("Boost Start Failed");
+                //Debug.Log("Boost Start Failed");
                 BoostCycle = BoostCycle.Idle;
             }
         }
@@ -94,7 +125,7 @@ public class SpeedBooster : MonoBehaviour
             if (BoostMeterValue >= BoostReleaseWindow.x && BoostMeterValue <= BoostReleaseWindow.y)
             {
                 //Release successful, keep speed
-                Debug.Log("Boost Release Success");
+                //Debug.Log("Boost Release Success");
 
                 BoostCycle = BoostCycle.Success;
             }
@@ -102,7 +133,7 @@ public class SpeedBooster : MonoBehaviour
             //player releasing hold at wrong time
             else
             {
-                Debug.Log("Boost End Failed");
+                //Debug.Log("Boost End Failed");
                 BoostCycle = BoostCycle.Idle;
             }
         }
@@ -113,7 +144,7 @@ public class SpeedBooster : MonoBehaviour
             if (BoostMeterValue >= BoostReleaseWindow.y)
             {
                 //boost held too long
-                Debug.Log("Boost Held too long");
+                //Debug.Log("Boost Held too long");
                 BoostCycle = BoostCycle.Idle;
             }
         }
@@ -124,7 +155,7 @@ public class SpeedBooster : MonoBehaviour
             if (BoostMeterValue >= BoostPressWindow.y && BoostMeterValue <= BoostReleaseWindow.x)
             {
                 //boost held too long
-                Debug.Log("Success Expired");
+                //Debug.Log("Success Expired");
                 BoostCycle = BoostCycle.Idle;
             }
         }
@@ -153,6 +184,15 @@ public class SpeedBooster : MonoBehaviour
             }
             return MaxSpeed;
         }
+        else if (BoostCycle == BoostCycle.NotRunning)
+        {
+            if (RowSlider != null)
+            {
+                Transform Handle = RowSlider.transform.Find("Handle Slide Area").Find("Handle");
+                Handle.GetComponent<Image>().color = BoostOff;
+            }
+            return DefaultSpeed;
+        }
 
         //player borked it, back to basics
         if (RowSlider != null)
@@ -161,12 +201,18 @@ public class SpeedBooster : MonoBehaviour
             Handle.GetComponent<Image>().color = BoostFailed;
         }
 
-        BoostCycle = BoostCycle.Idle;
         return DefaultSpeed;
     }
 
     private void OnBoostMeterComplete()
     {
         BoostMeterValue = 0;
+        BoostMeterTweener.ChangeStartValue(0.0f);
+
+        //if boost cycle is idle when we finish, stop the cycle
+        if (BoostCycle == BoostCycle.Idle)
+        {
+            StopCycle();
+        }
     }
 }
