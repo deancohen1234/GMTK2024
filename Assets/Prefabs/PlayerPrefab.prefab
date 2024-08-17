@@ -1957,6 +1957,8 @@ MonoBehaviour:
   GroundCheckMask:
     serializedVersion: 2
     m_Bits: 55
+  TurnAngle: 10
+  TurnAcceleration: 10
   HoverHeight: 3
   SpringConstant: 40
   Dampening: 0.2

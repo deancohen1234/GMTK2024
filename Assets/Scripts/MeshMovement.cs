@@ -24,6 +24,7 @@ public class MeshMovement : MonoBehaviour
     private float NextForwardLogTime = 0;
     private float CurrentRoll;
     private float CurrentDotDiff;
+    private float CurrentRollAngle;
 
     private const float MAX_ROLL_DOT = 0.5f;
 
@@ -39,7 +40,7 @@ public class MeshMovement : MonoBehaviour
         Quaternion MeshRotation = GetYawRotation(false);
         Quaternion ThrusterRotation = GetYawRotation(true);
 
-        Quaternion RollRotation = GetRollRotation(false);
+        Quaternion RollRotation = GetNoCameraRollRotation(false);
 
         MeshTransform.rotation = RollRotation * MeshRotation;
         ThrusterTransform.rotation = ThrusterRotation;
@@ -109,5 +110,23 @@ public class MeshMovement : MonoBehaviour
         CurrentRoll = Mathf.MoveTowards(CurrentRoll, desiredRollAmount, Time.deltaTime * RollSpeed);
 
         return Quaternion.AngleAxis(CurrentRoll, MeshTransform.forward);
+    }
+
+    private Quaternion GetNoCameraRollRotation(bool isThruster)
+    {
+        float xInput = (Input.GetAxis("Horizontal"));
+
+        float sign = Mathf.Sign(xInput);
+
+        if (Mathf.Abs(xInput) <= 0.1f)
+        {
+            sign = 0;
+        }
+
+        float acceleration = sign == 0 ? ReturnRollSpeed : RollSpeed;
+
+        CurrentRollAngle = Mathf.MoveTowards(CurrentRollAngle, MaxRollAngle * -sign, Time.deltaTime * acceleration);
+
+        return Quaternion.AngleAxis(CurrentRollAngle, MeshTransform.forward);
     }
 }

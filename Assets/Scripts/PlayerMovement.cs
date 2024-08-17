@@ -21,6 +21,11 @@ public class PlayerMovement : MonoBehaviour
     public float Gravity = 20f;
     public LayerMask GroundCheckMask = ~0;
 
+
+    [Header("Turn Params")]
+    public float TurnAngle = 30f;
+    public float TurnAcceleration = 10f;
+
     [Header("Hover Params")]
     public float HoverHeight = 3f;
     public float SpringConstant = 3f;
@@ -34,11 +39,16 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 GroundedForward;
     private Vector3 GroundedRight;
 
+    //turns with A and D keys
+    private Vector3 ForwardDirection;
+
     private GroundParams GroundParams;
     // Start is called before the first frame update
     void Start()
     {
         Body = GetComponent<Rigidbody>();
+
+        ForwardDirection = Body.transform.forward;
     }
 
     // Update is called once per frame
@@ -53,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 Velocity = Body.velocity;
 
-        Velocity = GetMoveVelocity(Velocity);
+        Velocity = GetNoCameraMoveVelocity(Velocity);
         Velocity += GetHoverVelocity(Velocity);
 
         //apply damper
@@ -81,6 +91,32 @@ public class PlayerMovement : MonoBehaviour
         Vector3 forwardVel = GroundedForward * DesiredMovement.x;
         Vector3 rightVel = GroundedRight * DesiredMovement.y;
         Vector3 desiredVel = (forwardVel + rightVel).normalized * Speed;
+
+        //move current Velocity to desired, based on acceleration
+        Vector3 velocity = Vector3.MoveTowards(CurrentVelocity, desiredVel, MaxAcceleration * Time.fixedDeltaTime);
+
+        //add gravity
+        velocity += -Vector3.up * Gravity * Time.fixedDeltaTime;
+
+        return velocity;
+    }
+
+    private Vector3 GetNoCameraMoveVelocity(Vector3 CurrentVelocity)
+    {
+        SetGroundParams();
+
+        //get local forward and right
+        Vector3 forward = Body.transform.forward;
+        Vector3 right = Body.transform.right;
+        GroundedForward = Vector3.ProjectOnPlane(forward, GroundParams.Normal);
+        GroundedRight = Vector3.ProjectOnPlane(right, GroundParams.Normal);
+
+        //do turning
+        Quaternion TurnQuat = Quaternion.AngleAxis(TurnAngle * DesiredMovement.y, GroundParams.Normal);
+        ForwardDirection = Vector3.Slerp(ForwardDirection, TurnQuat * ForwardDirection, Time.deltaTime * TurnAcceleration);
+
+        Vector3 desiredVel = (ForwardDirection.normalized * DesiredMovement.x) * Speed;
+
 
         //move current Velocity to desired, based on acceleration
         Vector3 velocity = Vector3.MoveTowards(CurrentVelocity, desiredVel, MaxAcceleration * Time.fixedDeltaTime);
