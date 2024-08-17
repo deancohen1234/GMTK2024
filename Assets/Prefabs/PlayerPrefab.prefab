@@ -2004,9 +2004,9 @@ MonoBehaviour:
   RotationSpeed: 10
   ThrusterLagPercent: 0.25
   ForwardLogRate: 0
-  MaxRollAngle: 50
-  RollSpeed: 80
-  ReturnRollSpeed: 13
+  MaxRollAngle: 60
+  RollSpeed: 50
+  ReturnRollSpeed: 15
 --- !u!1 &8237964894173498765
 GameObject:
   m_ObjectHideFlags: 0
