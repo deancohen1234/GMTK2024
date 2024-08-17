@@ -397,7 +397,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 351569769}
-  m_LocalRotation: {x: 0.09195957, y: 0.59179854, z: -0.068204805, w: 0.79791355}
+  m_LocalRotation: {x: 0.09195959, y: 0.59179854, z: -0.06820483, w: 0.79791355}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1777,15 +1777,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 1776482543}
-  Speed: 4
+  Speed: 40
   MaxAcceleration: 10
   Gravity: 20
   GroundCheckMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
   HoverHeight: 2.5
-  SpringConstant: 50
-  Dampening: 0.99
+  SpringConstant: 25
+  Dampening: 0.8
 --- !u!1 &1324402407
 GameObject:
   m_ObjectHideFlags: 0
