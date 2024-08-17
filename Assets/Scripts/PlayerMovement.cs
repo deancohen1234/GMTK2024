@@ -5,6 +5,7 @@ using DG.Tweening;
 
 public struct GroundParams
 {
+    public bool IsGrounded;
     public Vector3 Normal;
     public Vector3 Position;
 }
@@ -123,6 +124,12 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetHoverDamper(Vector3 CurrentVelocity)
     {
+        //only do hover damping if "grounded"
+        if (!GroundParams.IsGrounded)
+        {
+            return CurrentVelocity;
+        }
+
         float currentVel = 0;
 
         float dampenedY = Mathf.SmoothDamp(CurrentVelocity.y, 0, ref currentVel, Dampening);
@@ -137,10 +144,15 @@ public class PlayerMovement : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(Body.position, Vector3.down, out hit, Mathf.Infinity, GroundCheckMask))
+        if (Physics.Raycast(Body.position, Vector3.down, out hit, HoverHeight + 1.0f, GroundCheckMask))
         {
+            GroundParams.IsGrounded = true;
             GroundParams.Normal = hit.normal;
             GroundParams.Position = hit.point;
+        }
+        else
+        {
+            GroundParams.IsGrounded = false;
         }
     }
 }
