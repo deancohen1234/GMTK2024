@@ -1,6 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+
+public struct GroundParams
+{
+    public Vector3 Normal;
+    public Vector3 Position;
+}
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -13,8 +20,16 @@ public class PlayerMovement : MonoBehaviour
     public float Gravity = 20f;
     public LayerMask GroundCheckMask = ~0;
 
+    [Header("Hover Params")]
+    public float HoverHeight = 3f;
+    public float SpringConstant = 3f;
+    public float Dampening = 0.99f;
+
+
     private Vector2 DesiredMovement;
     private Rigidbody Body;
+
+    private GroundParams GroundParams;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,38 +49,60 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 GroundUp = GetGroundVector();
+        Vector3 Velocity = Body.velocity;
 
-        Vector3 Forward = (Body.position - Camera.position).normalized;
-        Vector3 Right = Vector3.Cross(GroundUp, Forward).normalized;
-
-        Vector3 GroundedForward = Vector3.ProjectOnPlane(Forward, GroundUp);
-        Vector3 GroundedRight = Vector3.ProjectOnPlane(Right, GroundUp);
-
-        Vector3 ForwardVel = GroundedForward * DesiredMovement.x;
-        Vector3 RightVel = GroundedRight * DesiredMovement.y;
-
-        Vector3 DesiredVel = (ForwardVel + RightVel).normalized * Speed;
-
-        Debug.DrawLine(transform.position, transform.position + DesiredVel, Color.red, 2f);
-
-        Vector3 Velocity = Vector3.MoveTowards(Body.velocity, DesiredVel, MaxAcceleration * Time.fixedDeltaTime);
-
-        Velocity += -Vector3.up * Gravity * Time.fixedDeltaTime;
+        Velocity = GetMoveVelocity(Velocity);
+        Velocity += GetHoverVelocity(Velocity);
 
         Body.velocity = Velocity;
     }
 
+    private Vector3 GetMoveVelocity(Vector3 CurrentVelocity)
+    {
+        SetGroundParams();
+
+        //get local forward and right
+        Vector3 forward = (Body.position - Camera.position).normalized;
+        Vector3 right = Vector3.Cross(GroundParams.Normal, forward).normalized;
+        Vector3 groundedForward = Vector3.ProjectOnPlane(forward, GroundParams.Normal);
+        Vector3 groundedRight = Vector3.ProjectOnPlane(right, GroundParams.Normal);
+
+        //get local forward and right vel
+        Vector3 forwardVel = groundedForward * DesiredMovement.x;
+        Vector3 rightVel = groundedRight * DesiredMovement.y;
+        Vector3 desiredVel = (forwardVel + rightVel).normalized * Speed;
+
+        //move current Velocity to desired, based on acceleration
+        Vector3 velocity = Vector3.MoveTowards(CurrentVelocity, desiredVel, MaxAcceleration * Time.fixedDeltaTime);
+
+        //add gravity
+        velocity += -Vector3.up * Gravity * Time.fixedDeltaTime;
+
+        return velocity;
+    }
+
+    private Vector3 GetHoverVelocity(Vector3 CurrentVelocity)
+    {
+        //try and spring the riding height at HoverHeight
+
+        float yDiff = (Body.position.y - (GroundParams.Position.y + HoverHeight));
+
+        float restoringVelocity = -SpringConstant * yDiff * Time.fixedDeltaTime;
+        restoringVelocity *= Dampening;
+
+        return GroundParams.Normal * restoringVelocity;
+    }
+
     //raycast down to get ground
-    private Vector3 GetGroundVector()
+    private void SetGroundParams()
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(Body.position, Vector3.down, out hit, 1.0f, GroundCheckMask))
+        if (Physics.Raycast(Body.position, Vector3.down, out hit, Mathf.Infinity, GroundCheckMask))
         {
-            return hit.normal;
-        }
 
-        return Vector3.up;
+            GroundParams.Normal = hit.normal;
+            GroundParams.Position = hit.point;
+        }
     }
 }
