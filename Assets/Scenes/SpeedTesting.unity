@@ -198,6 +198,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 4603152146030607019, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: RollSpeed
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 4603152146030607019, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: MaxRollAngle
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4603152146030607019, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: ForwardLogRate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4603152146030607019, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: ReturnRollSpeed
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4603152146030607019, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: ThrusterLagPercent
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4603152146030607019, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: RollAccelerationMultiplier
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6662461414836435856, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.9866011
