@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 GroundUp = GetGroundVector();
 
         Vector3 Forward = (Body.position - Camera.position).normalized;
-        Vector3 Right = Vector3.Cross(Forward, GroundUp).normalized;
+        Vector3 Right = Vector3.Cross(GroundUp, Forward).normalized;
 
         Vector3 GroundedForward = Vector3.ProjectOnPlane(Forward, GroundUp);
         Vector3 GroundedRight = Vector3.ProjectOnPlane(Right, GroundUp);
