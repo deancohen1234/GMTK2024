@@ -10,15 +10,20 @@ public class CameraSensitivity : MonoBehaviour
     private float StartingSensitivityX = 0;
     private float StartingSensitivityY = 0;
 
-    private void Start()
+    private void Awake()
     {
         StartingSensitivityX = FreeLook.m_XAxis.m_MaxSpeed;
         StartingSensitivityY = FreeLook.m_YAxis.m_MaxSpeed;
 
         UpdateSensitivity(PlayerPrefs.GetFloat("MouseSensitivity"));
     }
+
+    public void Update()
+    {
+        UpdateSensitivity(PlayerPrefs.GetFloat("MouseSensitivity"));
+    }
     // Update is called once per frame
-    public void UpdateSensitivity(float Mult)
+    private void UpdateSensitivity(float Mult)
     {
         //change range 
         FreeLook.m_XAxis.m_MaxSpeed = StartingSensitivityX * Mult;
