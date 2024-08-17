@@ -29,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 DesiredMovement;
     private Rigidbody Body;
 
+    private Vector3 GroundedForward;
+    private Vector3 GroundedRight;
+
     private GroundParams GroundParams;
     // Start is called before the first frame update
     void Start()
@@ -64,12 +67,12 @@ public class PlayerMovement : MonoBehaviour
         //get local forward and right
         Vector3 forward = (Body.position - Camera.position).normalized;
         Vector3 right = Vector3.Cross(GroundParams.Normal, forward).normalized;
-        Vector3 groundedForward = Vector3.ProjectOnPlane(forward, GroundParams.Normal);
-        Vector3 groundedRight = Vector3.ProjectOnPlane(right, GroundParams.Normal);
+        GroundedForward = Vector3.ProjectOnPlane(forward, GroundParams.Normal);
+        GroundedRight = Vector3.ProjectOnPlane(right, GroundParams.Normal);
 
         //get local forward and right vel
-        Vector3 forwardVel = groundedForward * DesiredMovement.x;
-        Vector3 rightVel = groundedRight * DesiredMovement.y;
+        Vector3 forwardVel = GroundedForward * DesiredMovement.x;
+        Vector3 rightVel = GroundedRight * DesiredMovement.y;
         Vector3 desiredVel = (forwardVel + rightVel).normalized * Speed;
 
         //move current Velocity to desired, based on acceleration
@@ -85,7 +88,16 @@ public class PlayerMovement : MonoBehaviour
     {
         //try and spring the riding height at HoverHeight
 
-        float yDiff = (Body.position.y - (GroundParams.Position.y + HoverHeight));
+        //get projected height ahead of player 
+        RaycastHit hit;
+        float projectedGroundHeight = GroundParams.Position.y;
+        if (Physics.Raycast(Body.position, GroundedForward, out hit, 7.5f, GroundCheckMask))
+        {
+            projectedGroundHeight = hit.point.y;
+            Debug.DrawLine(Body.position, hit.point, Color.red, 2f);
+        }
+
+        float yDiff = (Body.position.y - (projectedGroundHeight + HoverHeight));
 
         float restoringVelocity = -SpringConstant * yDiff * Time.fixedDeltaTime;
         restoringVelocity *= Dampening;
