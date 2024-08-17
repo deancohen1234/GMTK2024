@@ -36,13 +36,18 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 GroundUp = GetGroundVector();
 
-        Vector3 GroundedForward = Vector3.ProjectOnPlane(Camera.forward, GroundUp);
-        Vector3 GroundedRight = Vector3.ProjectOnPlane(Camera.right, GroundUp);
+        Vector3 Forward = (Body.position - Camera.position).normalized;
+        Vector3 Right = Vector3.Cross(Forward, GroundUp).normalized;
+
+        Vector3 GroundedForward = Vector3.ProjectOnPlane(Forward, GroundUp);
+        Vector3 GroundedRight = Vector3.ProjectOnPlane(Right, GroundUp);
 
         Vector3 ForwardVel = GroundedForward * DesiredMovement.x;
         Vector3 RightVel = GroundedRight * DesiredMovement.y;
 
         Vector3 DesiredVel = (ForwardVel + RightVel).normalized * Speed;
+
+        Debug.DrawLine(transform.position, transform.position + DesiredVel, Color.red, 2f);
 
         Vector3 Velocity = Vector3.MoveTowards(Body.velocity, DesiredVel, MaxAcceleration * Time.fixedDeltaTime);
 
