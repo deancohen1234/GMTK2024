@@ -7,8 +7,11 @@ public class PlayerMovement : MonoBehaviour
     [Header("References")]
     public Transform Camera;
 
-    [Header("Movement Parans")]
+    [Header("Movement Params")]
     public float Speed = 4f;
+    public float MaxAcceleration = 6f;
+    public float Gravity = 20f;
+    public LayerMask GroundCheckMask = ~0;
 
     private Vector2 DesiredMovement;
     private Rigidbody Body;
@@ -31,12 +34,33 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 MoveDirection = Camera.forward;
+        Vector3 GroundUp = GetGroundVector();
 
-        Vector3 ForwardVel = Camera.forward * DesiredMovement.x;
-        Vector3 RightVel = Camera.right * DesiredMovement.y;
+        Vector3 GroundedForward = Vector3.ProjectOnPlane(Camera.forward, GroundUp);
+        Vector3 GroundedRight = Vector3.ProjectOnPlane(Camera.right, GroundUp);
 
-        Vector3 Vel = (ForwardVel + RightVel).normalized * Speed;
-        Body.AddForce(Vel);
+        Vector3 ForwardVel = GroundedForward * DesiredMovement.x;
+        Vector3 RightVel = GroundedRight * DesiredMovement.y;
+
+        Vector3 DesiredVel = (ForwardVel + RightVel).normalized * Speed;
+
+        Vector3 Velocity = Vector3.MoveTowards(Body.velocity, DesiredVel, MaxAcceleration * Time.fixedDeltaTime);
+
+        Velocity += -Vector3.up * Gravity * Time.fixedDeltaTime;
+
+        Body.velocity = Velocity;
+    }
+
+    //raycast down to get ground
+    private Vector3 GetGroundVector()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(Body.position, Vector3.down, out hit, 1.0f, GroundCheckMask))
+        {
+            return hit.normal;
+        }
+
+        return Vector3.up;
     }
 }
