@@ -656,7 +656,7 @@ Transform:
   m_GameObject: {fileID: 2683025371517270561}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5148112, y: 0, z: 0, w: 0.85730356}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.00000047683716, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1235,7 +1235,7 @@ Transform:
   m_GameObject: {fileID: 5512288542301650526}
   serializedVersion: 2
   m_LocalRotation: {x: 0.47211555, y: 0, z: 0, w: 0.88153666}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.00000047683716, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1766,7 +1766,7 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 5
+  m_HorizontalDamping: 1.75
   m_VerticalDamping: 0
   m_ScreenX: 0.5
   m_ScreenY: 0.5
@@ -2121,7 +2121,7 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 5
+  m_HorizontalDamping: 1.75
   m_VerticalDamping: 0
   m_ScreenX: 0.5
   m_ScreenY: 0.5
@@ -2248,7 +2248,7 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 5
+  m_HorizontalDamping: 1.75
   m_VerticalDamping: 0
   m_ScreenX: 0.5
   m_ScreenY: 0.5
@@ -2359,6 +2359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3298312913499742182}
   - component: {fileID: 4710306892401386326}
+  - component: {fileID: 6574280555681437296}
   m_Layer: 0
   m_Name: CM FreeLook1
   m_TagString: Untagged
@@ -2426,7 +2427,7 @@ MonoBehaviour:
   m_YAxis:
     Value: 1
     m_SpeedMode: 0
-    m_MaxSpeed: 4
+    m_MaxSpeed: 8
     m_AccelTime: 0.05
     m_DecelTime: 0.05
     m_InputAxisName: Mouse Y
@@ -2450,7 +2451,7 @@ MonoBehaviour:
   m_XAxis:
     Value: 0
     m_SpeedMode: 0
-    m_MaxSpeed: 300
+    m_MaxSpeed: 600
     m_AccelTime: 0.05
     m_DecelTime: 0.05
     m_InputAxisName: Mouse X
@@ -2489,3 +2490,16 @@ MonoBehaviour:
   - {fileID: 7328269132570431608}
   - {fileID: 3069418180683162129}
   - {fileID: 1792634734292595268}
+--- !u!114 &6574280555681437296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9116436867464559383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e07ae170eaf35a744ad1d1d519430f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FreeLook: {fileID: 4710306892401386326}
