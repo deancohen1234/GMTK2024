@@ -24,7 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public float HoverHeight = 3f;
     public float SpringConstant = 3f;
     public float Dampening = 0.99f;
-
+    public float CheckAheadDistance = 20f;
+    public float CheckAheadHeight = 4f;
 
     private Vector2 DesiredMovement;
     private Rigidbody Body;
@@ -56,6 +57,9 @@ public class PlayerMovement : MonoBehaviour
 
         Velocity = GetMoveVelocity(Velocity);
         Velocity += GetHoverVelocity(Velocity);
+
+        //apply damper
+        Velocity = GetHoverDamper(Velocity);
 
         Body.velocity = Velocity;
     }
@@ -91,18 +95,44 @@ public class PlayerMovement : MonoBehaviour
         //get projected height ahead of player 
         RaycastHit hit;
         float projectedGroundHeight = GroundParams.Position.y;
-        if (Physics.Raycast(Body.position, GroundedForward, out hit, 7.5f, GroundCheckMask))
+
+        //get opposite and adjacent lengths
+        float height = (Body.position.y + CheckAheadHeight) - GroundParams.Position.y;
+        float lateralDistance = Mathf.Sqrt((height * height) + (CheckAheadDistance * CheckAheadDistance));
+
+        //caluclate angle of ray
+        float angle = Mathf.Atan2(height, CheckAheadDistance);
+        Quaternion tiltDownRotation = Quaternion.AngleAxis(Mathf.Rad2Deg * angle, GroundedRight);
+
+        //Debug.DrawLine(Body.position + Vector3.up * CheckAheadHeight, Body.position + Vector3.up * CheckAheadHeight + (tiltDownRotation * GroundedForward) * lateralDistance, Color.red, 1f);
+
+        if (Physics.Raycast(Body.position + Vector3.up * CheckAheadHeight, (tiltDownRotation * GroundedForward), out hit, lateralDistance, GroundCheckMask))
         {
-            projectedGroundHeight = hit.point.y;
-            Debug.DrawLine(Body.position, hit.point, Color.red, 2f);
+            if (hit.point.y > projectedGroundHeight)
+            {
+                projectedGroundHeight = hit.point.y;
+            }
         }
 
         float yDiff = (Body.position.y - (projectedGroundHeight + HoverHeight));
 
         float restoringVelocity = -SpringConstant * yDiff * Time.fixedDeltaTime;
-        restoringVelocity *= Dampening;
+        float dampening = -Dampening * CurrentVelocity.y;
+
+        //restoringVelocity *= Dampening;
 
         return GroundParams.Normal * restoringVelocity;
+    }
+
+    private Vector3 GetHoverDamper(Vector3 CurrentVelocity)
+    {
+        float currentVel = 0;
+
+        float dampenedY = Mathf.SmoothDamp(CurrentVelocity.y, 0, ref currentVel, Dampening);
+
+        CurrentVelocity.y = dampenedY;
+
+        return CurrentVelocity;
     }
 
     //raycast down to get ground
@@ -112,7 +142,6 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.Raycast(Body.position, Vector3.down, out hit, Mathf.Infinity, GroundCheckMask))
         {
-
             GroundParams.Normal = hit.normal;
             GroundParams.Position = hit.point;
         }
