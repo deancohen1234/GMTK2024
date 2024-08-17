@@ -147,6 +147,11 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetHoverVelocity(Vector3 CurrentVelocity)
     {
+        if (!GroundParams.IsGrounded)
+        {
+            return Vector3.zero;
+        }
+
         //try and spring the riding height at HoverHeight
 
         //get projected height ahead of player 
