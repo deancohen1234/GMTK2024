@@ -106,8 +106,6 @@ public class MeshMovement : MonoBehaviour
 
         float desiredRollAmount = Mathf.Clamp(MathStatics.Map(CurrentDotDiff, 0, MAX_ROLL_DOT, 0, MaxRollAngle), 0, MaxRollAngle) * rollDirection;
 
-        Debug.Log("Desired: " + desiredRollAmount);
-
         CurrentRoll = Mathf.MoveTowards(CurrentRoll, desiredRollAmount, Time.deltaTime * RollSpeed);
 
         return Quaternion.AngleAxis(CurrentRoll, MeshTransform.forward);
