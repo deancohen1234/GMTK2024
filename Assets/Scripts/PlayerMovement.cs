@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Turn Params")]
     public float TurnAngle = 30f;
     public float TurnAcceleration = 10f;
+    public Vector2 TurnSpeedMaxDiffPercent = new Vector2(1f, 0.25f);
 
     [Header("Hover Params")]
     public float HoverHeight = 3f;
@@ -35,18 +36,21 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector2 DesiredMovement;
     private Rigidbody Body;
+    private SpeedBooster SpeedBooster;
 
     private Vector3 GroundedForward;
     private Vector3 GroundedRight;
 
     //turns with A and D keys
     private Vector3 ForwardDirection;
+    private float PercentOfMaxSpeed;
 
     private GroundParams GroundParams;
     // Start is called before the first frame update
     void Start()
     {
         Body = GetComponent<Rigidbody>();
+        SpeedBooster = GetComponent<SpeedBooster>();
 
         ForwardDirection = Body.transform.forward;
     }
@@ -61,6 +65,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        CalculatePercentOfMaxSpeed();
+        SetGroundParams();
+
         Vector3 Velocity = Body.velocity;
 
         Velocity = GetNoCameraMoveVelocity(Velocity);
@@ -75,6 +82,16 @@ public class PlayerMovement : MonoBehaviour
     public void SetMaxSpeed(float NewMaxSpeed)
     {
         Speed = NewMaxSpeed;
+    }
+
+    public float GetPercentOfMaxSpeed()
+    {
+        return PercentOfMaxSpeed;
+    }
+
+    public void CalculatePercentOfMaxSpeed()
+    {
+        PercentOfMaxSpeed = Mathf.Clamp01(Body.velocity.magnitude / SpeedBooster.MaxSpeed);
     }
 
     private Vector3 GetMoveVelocity(Vector3 CurrentVelocity)
@@ -103,20 +120,21 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetNoCameraMoveVelocity(Vector3 CurrentVelocity)
     {
-        SetGroundParams();
-
         //get local forward and right
         Vector3 forward = Body.transform.forward;
         Vector3 right = Body.transform.right;
         GroundedForward = Vector3.ProjectOnPlane(forward, GroundParams.Normal);
         GroundedRight = Vector3.ProjectOnPlane(right, GroundParams.Normal);
 
+        //limit turn radius based on speed
+        float turnSpeedMaxDiffPercent = Mathf.Lerp(TurnSpeedMaxDiffPercent.x, TurnSpeedMaxDiffPercent.y, PercentOfMaxSpeed);
+
         //do turning
-        Quaternion TurnQuat = Quaternion.AngleAxis(TurnAngle * DesiredMovement.y, GroundParams.Normal);
-        ForwardDirection = Vector3.Slerp(ForwardDirection, TurnQuat * ForwardDirection, Time.deltaTime * TurnAcceleration);
+        Quaternion TurnQuat = Quaternion.AngleAxis(TurnAngle * turnSpeedMaxDiffPercent * DesiredMovement.y, GroundParams.Normal);
+
+        ForwardDirection = Vector3.Slerp(ForwardDirection, TurnQuat * ForwardDirection, Time.deltaTime * TurnAcceleration);        
 
         Vector3 desiredVel = (ForwardDirection.normalized * DesiredMovement.x) * Speed;
-
 
         //move current Velocity to desired, based on acceleration
         Vector3 velocity = Vector3.MoveTowards(CurrentVelocity, desiredVel, MaxAcceleration * Time.fixedDeltaTime);
@@ -147,6 +165,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.Raycast(Body.position + Vector3.up * CheckAheadHeight, (tiltDownRotation * GroundedForward), out hit, lateralDistance, GroundCheckMask))
         {
+            //make sure it's not too slopey
             if (hit.point.y > projectedGroundHeight && Vector3.Dot(hit.normal, Vector3.up) > 0.25f)
             {
                 projectedGroundHeight = hit.point.y;
