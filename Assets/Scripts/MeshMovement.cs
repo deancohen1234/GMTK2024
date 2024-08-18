@@ -7,6 +7,7 @@ public class MeshMovement : MonoBehaviour
     public Transform CharacterContainer;
     public Transform BodyContainer;
     public Transform ThrusterTransform;
+    public Transform ThrusterInner;
 
     public float RotationSpeed = 10f;
     [Range(0, 1)]
@@ -16,6 +17,10 @@ public class MeshMovement : MonoBehaviour
     public AnimationCurve[] HoverShapes;
     public float HoverFrequency = 1f;
     public float HoverAmplitude = 0.5f;
+
+    [Header("Inner Thruster Spin")]
+    public Vector2 MinMaxPlayerSpeed = new Vector2(0f, 80f);
+    public Vector2 MinMaxInnerThrustSpinSpeed = new Vector2(0f, 80f);
 
     [Header("Roll Shit")]
     public float MaxRollAngle = 10f;
@@ -30,6 +35,8 @@ public class MeshMovement : MonoBehaviour
     private float StartingLocalY;
     private AnimationCurve RandomCurve;
     private float HoverTime;
+
+    private float InnerThrusterSpinAngle;
 
     void Start()
     {
@@ -49,6 +56,7 @@ public class MeshMovement : MonoBehaviour
         Quaternion RollRotation = GetNoCameraRollRotation(false);
 
         UpdateHover();
+        UpdateThrusterInner();
 
         BodyContainer.rotation = RollRotation * MeshRotation;
         ThrusterTransform.rotation = ThrusterRotation;
@@ -115,5 +123,18 @@ public class MeshMovement : MonoBehaviour
             RandomCurve = HoverShapes[Random.Range(0, HoverShapes.Length)];
             HoverTime = 0;
         }
+    }
+
+    private void UpdateThrusterInner()
+    {
+        float currentSpeed = Body.velocity.magnitude;
+
+        float normalizedInnerSpeed = MathStatics.Map(currentSpeed, MinMaxPlayerSpeed.x, MinMaxPlayerSpeed.y, MinMaxInnerThrustSpinSpeed.x, MinMaxInnerThrustSpinSpeed.y);
+        normalizedInnerSpeed = Mathf.Clamp(normalizedInnerSpeed, MinMaxInnerThrustSpinSpeed.x, MinMaxInnerThrustSpinSpeed.y);
+
+        InnerThrusterSpinAngle = Time.deltaTime * normalizedInnerSpeed;
+
+        Quaternion Rotation = Quaternion.Euler(0, 0, InnerThrusterSpinAngle);
+        ThrusterInner.transform.localRotation *= Rotation;
     }
 }
