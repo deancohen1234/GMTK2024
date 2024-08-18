@@ -10,7 +10,8 @@ public enum BoostCycle
     Held = 1,
     Success = 2,
     HighGearFail = 3,
-    NotRunning = 4
+    NotRunning = 4,
+    Overboost = 5
 }
 
 [System.Serializable]
@@ -64,6 +65,7 @@ public class SpeedBooster : MonoBehaviour
     public Color BoostSuccess = Color.blue;
     public Color BoostInProgress = Color.yellow;
     public Color BoostOff = Color.grey;
+    public Color BoostOverboost = Color.magenta;
 
     public BoostGear[] BoostGears;
 
@@ -125,6 +127,15 @@ public class SpeedBooster : MonoBehaviour
 
     private void UpdateBoostCycle(bool isPressingMouseButton, bool isReleasingMouseButton)
     {
+        if (BoostCycle == BoostCycle.Overboost)
+        {
+            if (isPressingMouseButton)
+            {
+                //lose gear if you press boost again
+                FailGearChange();
+            }
+        }
+
         BoostGear CurrentGear = GetCurrentGear();
 
         //if boost cycle isn't running then start it when button is pressed
@@ -155,7 +166,7 @@ public class SpeedBooster : MonoBehaviour
             {
                 //boost set back to idle
                 //Debug.Log("Boost Start Failed");
-                OnGearFailure();
+                FailGearChange();
             }
         }
 
@@ -166,13 +177,13 @@ public class SpeedBooster : MonoBehaviour
             if (CurrentGear.IsInReleaseWindow(BoostMeterValue))
             {
                 //Release successful, keep speed
-                OnGearSuccess();
+                SucceedGearChange();
             }
 
             //player releasing hold at wrong time
             else
             {
-                OnGearFailure();
+                FailGearChange();
             }
         }
 
@@ -182,7 +193,7 @@ public class SpeedBooster : MonoBehaviour
             if (CurrentGear.IsHeldTooLong(BoostMeterValue))
             {
                 //boost held too long
-                OnGearFailure();
+                FailGearChange();
             }
         }
 
@@ -192,7 +203,7 @@ public class SpeedBooster : MonoBehaviour
             if (CurrentGear.IsReleasedTooLate(BoostMeterValue))
             {
                 //boost held too long
-                OnGearFailure();
+                FailGearChange();
             }
         }
 
@@ -202,14 +213,13 @@ public class SpeedBooster : MonoBehaviour
             if (CurrentGear.IsReleasedTooLate(BoostMeterValue))
             {
                 //boost held too long
-                OnGearFailure();
+                FailGearChange();
             }
         }
     }
 
     private float EvaluateBoostCycleSpeed()
-    {       
-        
+    {
         //boost cycle was done well, we can chill
         if (BoostCycle == BoostCycle.Held)
         {
@@ -239,6 +249,17 @@ public class SpeedBooster : MonoBehaviour
                 Transform Handle = RowSlider.transform.Find("Handle Slide Area").Find("Handle");
                 Handle.GetComponent<Image>().color = BoostOff;
             }
+            return GetCurrentGearSpeed();
+        }
+
+        else if (BoostCycle == BoostCycle.Overboost)
+        {
+            if (RowSlider != null)
+            {
+                Transform Handle = RowSlider.transform.Find("Handle Slide Area").Find("Handle");
+                Handle.GetComponent<Image>().color = BoostOverboost;
+            }
+
             return GetCurrentGearSpeed();
         }
 
@@ -281,14 +302,21 @@ public class SpeedBooster : MonoBehaviour
     }
 
     //move up a gear
-    private void OnGearSuccess()
+    private void SucceedGearChange()
     {
         BoostGearIndex = Mathf.Min(BoostGearIndex + 1, BoostGears.Length - 1);
 
-        BoostCycle = BoostCycle.Success;
+        if (BoostGearIndex == BoostGears.Length - 1)
+        {
+            BoostCycle = BoostCycle.Overboost;
+        }
+        else
+        {
+            BoostCycle = BoostCycle.Success;
+        }
     }
 
-    private void OnGearFailure()
+    private void FailGearChange()
     {
         BoostGearIndex = Mathf.Max(BoostGearIndex - 1, 0);
 
