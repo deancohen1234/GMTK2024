@@ -49,7 +49,6 @@ public class SettingsMenu : MonoBehaviour
     {
         if (PlayerPrefs.HasKey(MASTER_VOLUME_PREF_KEY))
         {
-            Debug.Log("Setting Master: " + PlayerPrefs.GetFloat(MASTER_VOLUME_PREF_KEY));
             MasterVolumeSlider.value = PlayerPrefs.GetFloat(MASTER_VOLUME_PREF_KEY);
         }
 
