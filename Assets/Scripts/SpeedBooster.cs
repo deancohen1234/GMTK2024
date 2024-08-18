@@ -18,6 +18,7 @@ public enum BoostCycle
 public struct GearVFX
 {
     public Gradient ColorGradient;
+    public ParticleSystem.MinMaxCurve StartSpeed;
     public float TrailLength;
 }
 
@@ -37,10 +38,16 @@ public class BoostGear
     public float BoostChangeDuration = 1.0f;
     public Ease BoostEase = Ease.Linear;
 
-    public void EnterGear(ParticleSystem ThrusterSystem)
+    public void UpdateGearVFX(ParticleSystem ThrusterSystem, float Value)
     {
-        //Apply VFX
+        //DEAN All vfx are updating here, didn't have time or a brain enough to put these in proper
+        //use the module to change those parameters to your liking
 
+        //Apply VFX
+        var module = ThrusterSystem.main;
+
+        module.startColor = GearVFX.ColorGradient.Evaluate(Value);
+        module.startSpeed = GearVFX.StartSpeed;
     }
 
     public bool IsInHeldWindow(float Value)
@@ -252,6 +259,9 @@ public class SpeedBooster : MonoBehaviour
                 FailGearChange();
             }
         }
+
+        CurrentGear.UpdateGearVFX(ExhaustSystem, BoostMeterValue);
+
     }
 
     private float EvaluateBoostCycleSpeed()
@@ -334,6 +344,8 @@ public class SpeedBooster : MonoBehaviour
         {
             BoostCycle = BoostCycle.Success;
         }
+
+        //DEAN add gear up fx here
     }
 
     private void FailGearChange()
@@ -349,5 +361,8 @@ public class SpeedBooster : MonoBehaviour
         {
             BoostCycle = BoostCycle.HighGearFail;
         }
+
+        //DEAN add gear down fx here
+
     }
 }
