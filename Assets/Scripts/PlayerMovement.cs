@@ -37,6 +37,9 @@ public class PlayerMovement : MonoBehaviour
     public KeyCode JumpKey = KeyCode.Space;
     public float JumpSpeed = 20f;
 
+    [Header("Reset")]
+    public KeyCode ResetKey = KeyCode.R;
+
     private Vector2 DesiredMovement;
     private bool DesiresJump;
 
@@ -70,6 +73,13 @@ public class PlayerMovement : MonoBehaviour
         if (GroundParams.IsGrounded)
         {
             DesiresJump |= Input.GetKeyDown(JumpKey);
+        }
+
+        if (Input.GetKeyDown(ResetKey))
+        {
+            //reset everything
+            Body.MovePosition(Body.position + Vector3.up * 5f);
+            Body.MoveRotation(Quaternion.identity);
         }
     }
 
@@ -220,6 +230,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetJumpVelocity(Vector3 CurrentVelocity)
     {
+
         GroundParams.IsGrounded = false;
 
         //avoid snatching on the ground
