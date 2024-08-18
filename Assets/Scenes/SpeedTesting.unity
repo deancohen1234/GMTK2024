@@ -232,7 +232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: BoostGears.Array.data[2].BoostChangeDuration
-      value: 2.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: BoostGears.Array.data[3].BoostChangeDuration

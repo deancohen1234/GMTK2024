@@ -55,12 +55,9 @@ public class SpeedBooster : MonoBehaviour
 
     private PlayerMovement PlayerMovement;
 
-    public float DefaultSpeed = 10f;
     public float MaxSpeed = 30f;
 
     [Header("Boost Values")]
-    public Vector2 BoostPressWindow = new Vector2(0.2f, 0.4f);
-    public Vector2 BoostReleaseWindow = new Vector2(0.8f, 1.0f);
     public Color BoostFailed = Color.red;
     public Color BoostSuccess = Color.blue;
     public Color BoostInProgress = Color.yellow;
@@ -68,10 +65,6 @@ public class SpeedBooster : MonoBehaviour
     public Color BoostOverboost = Color.magenta;
 
     public BoostGear[] BoostGears;
-
-    //in seconds
-    public float BoostChangeDuration = 1.0f;
-    public Ease BoostEase = Ease.Linear;
 
     //moves from 0-1
     //must be released from 
@@ -109,9 +102,9 @@ public class SpeedBooster : MonoBehaviour
 
     private void StartCycle()
     {
-        BoostMeterTweener = DOTween.To(() => BoostMeterValue, x => BoostMeterValue = x, 1.0f, BoostChangeDuration).SetLoops(-1);
+        BoostMeterTweener = DOTween.To(() => BoostMeterValue, x => BoostMeterValue = x, 1.0f, GetCurrentGear().BoostChangeDuration).SetLoops(-1);
         BoostMeterTweener.OnStepComplete(OnBoostMeterComplete);
-        BoostMeterTweener.SetEase(BoostEase);
+        BoostMeterTweener.SetEase(GetCurrentGear().BoostEase);
 
         BoostCycle = BoostCycle.Idle;
 
@@ -276,7 +269,8 @@ public class SpeedBooster : MonoBehaviour
     private void OnBoostMeterComplete()
     {
         BoostMeterValue = 0;
-        BoostMeterTweener.ChangeStartValue(0.0f);
+        BoostMeterTweener.ChangeStartValue(0.0f, GetCurrentGear().BoostChangeDuration);
+        BoostMeterTweener.SetEase(GetCurrentGear().BoostEase);
 
         if (BoostCycle == BoostCycle.HighGearFail)
         {
