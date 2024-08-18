@@ -6,6 +6,7 @@ using UnityEngine;
 public class LightingManager : MonoBehaviour
 {
     public Light DirectionalLight;
+    public Material SkyboxMaterial;
     public LightingPreset Preset;
 
     [Range(0, 24)]
@@ -51,5 +52,8 @@ public class LightingManager : MonoBehaviour
             DirectionalLight.color = Preset.DirectionalColor.Evaluate(timePercent);
             DirectionalLight.transform.localRotation = Quaternion.Euler(new Vector3((timePercent * 360f) - 90, 170f, 0));
         }
+
+        SkyboxMaterial.SetColor("_Tint", Preset.SkyColor.Evaluate(timePercent));
+
     }
 }

@@ -422,7 +422,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1760237037291282689}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -1380,8 +1380,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DirectionalLight: {fileID: 0}
+  SkyboxMaterial: {fileID: 2100000, guid: 8186e7434b357cd48afca597a733c97d, type: 2}
   Preset: {fileID: 11400000, guid: 2f03c92c69def6e449e962410c2311b5, type: 2}
-  TimeOfDay: 12.64
+  TimeOfDay: 5.01
 --- !u!1 &4195680516599541152
 GameObject:
   m_ObjectHideFlags: 0
