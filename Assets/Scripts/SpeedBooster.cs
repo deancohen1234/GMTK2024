@@ -55,7 +55,8 @@ public class SpeedBooster : MonoBehaviour
 
     private PlayerMovement PlayerMovement;
 
-    public float MaxSpeed = 30f;
+    [Header("Input")]
+    public KeyCode BoostKey = KeyCode.LeftShift;
 
     [Header("Boost Values")]
     public Color BoostFailed = Color.red;
@@ -88,7 +89,7 @@ public class SpeedBooster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateBoostCycle(Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space), Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.Space));
+        UpdateBoostCycle(Input.GetMouseButtonDown(0) || Input.GetKeyDown(BoostKey), Input.GetMouseButtonUp(0) || Input.GetKeyUp(BoostKey));
 
         float NewSpeed = EvaluateBoostCycleSpeed();
 
@@ -98,6 +99,28 @@ public class SpeedBooster : MonoBehaviour
         {
             RowSlider.value = BoostMeterValue;
         }
+    }
+
+    public bool IsOverboosting()
+    {
+        return BoostCycle == BoostCycle.Overboost;
+    }
+
+    public BoostGear GetCurrentGear()
+    {
+        return BoostGears[BoostGearIndex];
+    }
+
+    public float GetCurrentGearSpeed()
+    {
+        return GetCurrentGear().MaxSpeed;
+    }
+
+    public float GetHigherGearSpeed()
+    {
+        int index = Mathf.Min(BoostGearIndex + 1, BoostGears.Length - 1);
+
+        return BoostGears[index].MaxSpeed;
     }
 
     private void StartCycle()
@@ -276,23 +299,6 @@ public class SpeedBooster : MonoBehaviour
         {
             BoostCycle = BoostCycle.Idle;
         }
-    }
-
-    private BoostGear GetCurrentGear()
-    {
-        return BoostGears[BoostGearIndex];
-    }
-
-    private float GetCurrentGearSpeed()
-    {
-        return GetCurrentGear().MaxSpeed;
-    }
-
-    private float GetHigherGearSpeed()
-    {
-        int index = Mathf.Min(BoostGearIndex + 1, BoostGears.Length - 1);
-
-        return BoostGears[index].MaxSpeed;
     }
 
     //move up a gear

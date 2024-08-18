@@ -21,7 +21,6 @@ public class PlayerMovement : MonoBehaviour
     public float Gravity = 20f;
     public LayerMask GroundCheckMask = ~0;
 
-
     [Header("Turn Params")]
     public float TurnAngle = 30f;
     public float TurnAcceleration = 10f;
@@ -34,7 +33,13 @@ public class PlayerMovement : MonoBehaviour
     public float CheckAheadDistance = 20f;
     public float CheckAheadHeight = 4f;
 
+    [Header("Jumping")]
+    public KeyCode JumpKey = KeyCode.Space;
+    public float JumpSpeed = 20f;
+
     private Vector2 DesiredMovement;
+    private bool DesiresJump;
+
     private Rigidbody Body;
     private SpeedBooster SpeedBooster;
 
@@ -61,6 +66,11 @@ public class PlayerMovement : MonoBehaviour
         //get input
         DesiredMovement.x = Input.GetAxis("Vertical");
         DesiredMovement.y = Input.GetAxis("Horizontal");
+
+        if (GroundParams.IsGrounded)
+        {
+            DesiresJump |= Input.GetKeyDown(JumpKey);
+        }
     }
 
     private void FixedUpdate()
@@ -75,6 +85,13 @@ public class PlayerMovement : MonoBehaviour
 
         //apply damper
         Velocity = GetHoverDamper(Velocity);
+
+        if (DesiresJump)
+        {
+            DesiresJump = false;
+            Velocity += GetJumpVelocity(Velocity);
+
+        }
 
         Body.velocity = Velocity;
     }
@@ -91,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void CalculatePercentOfMaxSpeed()
     {
-        PercentOfMaxSpeed = Mathf.Clamp01(Body.velocity.magnitude / SpeedBooster.MaxSpeed);
+        PercentOfMaxSpeed = Mathf.Clamp01(Body.velocity.magnitude / SpeedBooster.GetCurrentGearSpeed());
     }
 
     private Vector3 GetMoveVelocity(Vector3 CurrentVelocity)
@@ -199,6 +216,18 @@ public class PlayerMovement : MonoBehaviour
         CurrentVelocity.y = dampenedY;
 
         return CurrentVelocity;
+    }
+
+    private Vector3 GetJumpVelocity(Vector3 CurrentVelocity)
+    {
+        GroundParams.IsGrounded = false;
+
+        //avoid snatching on the ground
+        Body.MovePosition(Body.position + GroundParams.Normal * 0.1f);
+
+        Vector3 jumpForce = GroundParams.Normal * JumpSpeed;
+
+        return jumpForce;
     }
 
     //raycast down to get ground
