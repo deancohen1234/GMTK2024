@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.5523896, g: 0.5620903, b: 0.25188005, a: 1}
+  m_FogColor: {r: 0.8556208, g: 0.87064654, b: 0.3901482, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.70005566, g: 0.7366097, b: 0.80431515, a: 1}
+  m_AmbientSkyColor: {r: 0.89465165, g: 0.90975416, b: 0.7499202, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -1283,7 +1283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DirectionalLight: {fileID: 1869787362}
   Preset: {fileID: 11400000, guid: 2f03c92c69def6e449e962410c2311b5, type: 2}
-  TimeOfDay: 18.28
+  TimeOfDay: 16.69
 --- !u!4 &1301812079
 Transform:
   m_ObjectHideFlags: 0
@@ -1742,7 +1742,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.41020086, g: 0.41020086, b: 0.41020086, a: 1}
+  m_Color: {r: 0.52422535, g: 0.52422535, b: 0.52422535, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -1801,7 +1801,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869787361}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.087097265, y: -0.036504366, z: -0.99552566, w: -0.0031937205}
+  m_LocalRotation: {x: 0.08587754, y: 0.1699901, z: -0.9815841, w: 0.014872218}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
