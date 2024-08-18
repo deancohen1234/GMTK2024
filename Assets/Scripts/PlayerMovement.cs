@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     public float TurnAngle = 30f;
     public float TurnAcceleration = 10f;
     public Vector2 TurnSpeedMaxDiffPercent = new Vector2(1f, 0.25f);
+    public float MaxTurnAngleDiff = 30f;
 
     [Header("Hover Params")]
     public float HoverHeight = 3f;
@@ -39,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Reset")]
     public KeyCode ResetKey = KeyCode.R;
+
+    public Transform ForwardThing;
 
     private Vector2 DesiredMovement;
     private bool DesiresJump;
@@ -80,6 +83,8 @@ public class PlayerMovement : MonoBehaviour
             //reset everything
             Body.MovePosition(Body.position + Vector3.up * 5f);
             Body.MoveRotation(Quaternion.identity);
+
+            ForwardDirection = Body.transform.forward;
         }
     }
 
@@ -100,7 +105,6 @@ public class PlayerMovement : MonoBehaviour
         {
             DesiresJump = false;
             Velocity += GetJumpVelocity(Velocity);
-
         }
 
         Body.velocity = Velocity;
@@ -132,6 +136,8 @@ public class PlayerMovement : MonoBehaviour
         GroundedRight = Vector3.ProjectOnPlane(right, GroundParams.Normal);
 
         //get local forward and right vel
+
+
         Vector3 forwardVel = GroundedForward * DesiredMovement.x;
         Vector3 rightVel = GroundedRight * DesiredMovement.y;
         Vector3 desiredVel = (forwardVel + rightVel).normalized * Speed;
@@ -156,18 +162,26 @@ public class PlayerMovement : MonoBehaviour
         //limit turn radius based on speed
         float turnSpeedMaxDiffPercent = Mathf.Lerp(TurnSpeedMaxDiffPercent.x, TurnSpeedMaxDiffPercent.y, PercentOfMaxSpeed);
 
+        float dot = Vector3.Dot(ForwardDirection, CurrentVelocity.normalized);
+
         //do turning
-        Quaternion TurnQuat = Quaternion.AngleAxis(TurnAngle * turnSpeedMaxDiffPercent * DesiredMovement.y, GroundParams.Normal);
+        Quaternion TurnQuat = Quaternion.AngleAxis(TurnAngle * turnSpeedMaxDiffPercent * DesiredMovement.y * PercentOfMaxSpeed * dot, GroundParams.Normal);
 
         ForwardDirection = Vector3.Slerp(ForwardDirection, TurnQuat * ForwardDirection, Time.deltaTime * TurnAcceleration);        
 
-        Vector3 desiredVel = (ForwardDirection.normalized * DesiredMovement.x) * Speed;
+        float forwardThrust = SpeedBooster.IsOverboosting() ? 1f : DesiredMovement.x;
+
+        Vector3 desiredVel = (ForwardDirection.normalized * forwardThrust) * Speed;
 
         //move current Velocity to desired, based on acceleration
         Vector3 velocity = Vector3.MoveTowards(CurrentVelocity, desiredVel, MaxAcceleration * Time.fixedDeltaTime);
 
         //add gravity
         velocity += -Vector3.up * Gravity * Time.fixedDeltaTime;
+
+        Debug.DrawLine(Body.position, Body.position + ForwardDirection * 3f, Color.white);
+
+        ForwardThing.rotation = Quaternion.LookRotation(ForwardDirection);
 
         return velocity;
     }

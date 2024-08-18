@@ -15,6 +15,13 @@ public enum BoostCycle
 }
 
 [System.Serializable]
+public struct GearVFX
+{
+    public Gradient ColorGradient;
+    public float TrailLength;
+}
+
+[System.Serializable]
 public class BoostGear
 {
     public string Name;
@@ -22,11 +29,19 @@ public class BoostGear
     public Vector2 BoostPressWindow = new Vector2(0.2f, 0.4f);
     public Vector2 BoostReleaseWindow = new Vector2(0.8f, 1.0f);
 
+    public GearVFX GearVFX;
+
     public float MaxSpeed = 30f;
 
     //in seconds
     public float BoostChangeDuration = 1.0f;
     public Ease BoostEase = Ease.Linear;
+
+    public void EnterGear(ParticleSystem ThrusterSystem)
+    {
+        //Apply VFX
+
+    }
 
     public bool IsInHeldWindow(float Value)
     {
@@ -57,6 +72,11 @@ public class SpeedBooster : MonoBehaviour
 
     [Header("Input")]
     public KeyCode BoostKey = KeyCode.LeftShift;
+
+    [Header("VFX")]
+    public ParticleSystem ExhaustSystem;
+    public ParticleSystem FailSmokeSystem;
+    public ParticleSystem InputReadySystem;
 
     [Header("Boost Values")]
     public Color BoostFailed = Color.red;
