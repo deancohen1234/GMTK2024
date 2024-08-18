@@ -52,7 +52,7 @@ public class SpeedBooster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateBoostCycle(Input.GetMouseButtonDown(0), Input.GetMouseButtonUp(0));
+        UpdateBoostCycle(Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space), Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.Space));
 
         float NewSpeed = EvaluateBoostInput(Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
 
