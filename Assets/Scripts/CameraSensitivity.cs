@@ -12,6 +12,11 @@ public class CameraSensitivity : MonoBehaviour
 
     private void Awake()
     {
+        if (!PlayerPrefs.HasKey("MouseSensitivity"))
+        {
+            PlayerPrefs.SetFloat("MouseSensitivity", 0.75f);
+        }
+        
         StartingSensitivityX = FreeLook.m_XAxis.m_MaxSpeed;
         StartingSensitivityY = FreeLook.m_YAxis.m_MaxSpeed;
 

@@ -9,8 +9,43 @@ public enum BoostCycle
     Idle = 0,
     Held = 1,
     Success = 2,
-    Stalled = 3,
+    HighGearFail = 3,
     NotRunning = 4
+}
+
+[System.Serializable]
+public class BoostGear
+{
+    public string Name;
+
+    public Vector2 BoostPressWindow = new Vector2(0.2f, 0.4f);
+    public Vector2 BoostReleaseWindow = new Vector2(0.8f, 1.0f);
+
+    public float MaxSpeed = 30f;
+
+    //in seconds
+    public float BoostChangeDuration = 1.0f;
+    public Ease BoostEase = Ease.Linear;
+
+    public bool IsInHeldWindow(float Value)
+    {
+        return Value >= BoostPressWindow.x && Value <= BoostPressWindow.y;
+    }
+
+    public bool IsInReleaseWindow(float Value)
+    {
+        return Value >= BoostReleaseWindow.x && Value <= BoostReleaseWindow.y;
+    }
+
+    public bool IsHeldTooLong(float Value)
+    {
+        return Value >= BoostReleaseWindow.y;
+    }
+
+    public bool IsReleasedTooLate(float Value)
+    {
+        return Value >= BoostPressWindow.y && Value <= BoostReleaseWindow.x;
+    }
 }
 
 public class SpeedBooster : MonoBehaviour
@@ -30,6 +65,8 @@ public class SpeedBooster : MonoBehaviour
     public Color BoostInProgress = Color.yellow;
     public Color BoostOff = Color.grey;
 
+    public BoostGear[] BoostGears;
+
     //in seconds
     public float BoostChangeDuration = 1.0f;
     public Ease BoostEase = Ease.Linear;
@@ -40,6 +77,8 @@ public class SpeedBooster : MonoBehaviour
     private BoostCycle BoostCycle = BoostCycle.Idle;
     Tweener BoostMeterTweener;
 
+    private int BoostGearIndex;
+
 
     // Start is called before the first frame update
     void Start()
@@ -47,6 +86,8 @@ public class SpeedBooster : MonoBehaviour
         PlayerMovement = GetComponent<PlayerMovement>();
 
         BoostCycle = BoostCycle.NotRunning;
+
+        BoostGearIndex = 0;
     }
 
     // Update is called once per frame
@@ -54,7 +95,7 @@ public class SpeedBooster : MonoBehaviour
     {
         UpdateBoostCycle(Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space), Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.Space));
 
-        float NewSpeed = EvaluateBoostInput(Input.GetMouseButton(0), Input.GetMouseButtonUp(0));
+        float NewSpeed = EvaluateBoostCycleSpeed();
 
         PlayerMovement.SetMaxSpeed(NewSpeed);
 
@@ -84,7 +125,7 @@ public class SpeedBooster : MonoBehaviour
 
     private void UpdateBoostCycle(bool isPressingMouseButton, bool isReleasingMouseButton)
     {
-        //Debug.Log("Cycle: " + BoostCycle);
+        BoostGear CurrentGear = GetCurrentGear();
 
         //if boost cycle isn't running then start it when button is pressed
         if (BoostCycle == BoostCycle.NotRunning)
@@ -94,7 +135,7 @@ public class SpeedBooster : MonoBehaviour
                 //start boost at minimum press window
                 StartCycle();
                 //Debug.Log("Starting");
-                BoostMeterValue = BoostPressWindow.x;
+                BoostMeterValue = BoostGears[0].BoostPressWindow.x;
             }
         }
 
@@ -102,7 +143,7 @@ public class SpeedBooster : MonoBehaviour
         if (BoostCycle != BoostCycle.Held && isPressingMouseButton)
         {
             //player pressing hold at proper time
-            if (BoostMeterValue >= BoostPressWindow.x && BoostMeterValue <= BoostPressWindow.y)
+            if (CurrentGear.IsInHeldWindow(BoostMeterValue))
             {
                 //boost started
                 //Debug.Log("Boost Started");
@@ -114,7 +155,7 @@ public class SpeedBooster : MonoBehaviour
             {
                 //boost set back to idle
                 //Debug.Log("Boost Start Failed");
-                BoostCycle = BoostCycle.Idle;
+                OnGearFailure();
             }
         }
 
@@ -122,46 +163,51 @@ public class SpeedBooster : MonoBehaviour
         else if (BoostCycle == BoostCycle.Held && isReleasingMouseButton)
         {
             //player releasing hold at proper time
-            if (BoostMeterValue >= BoostReleaseWindow.x && BoostMeterValue <= BoostReleaseWindow.y)
+            if (CurrentGear.IsInReleaseWindow(BoostMeterValue))
             {
                 //Release successful, keep speed
-                //Debug.Log("Boost Release Success");
-
-                BoostCycle = BoostCycle.Success;
+                OnGearSuccess();
             }
 
             //player releasing hold at wrong time
             else
             {
-                //Debug.Log("Boost End Failed");
-                BoostCycle = BoostCycle.Idle;
+                OnGearFailure();
             }
         }
 
         //check if held is held too long
         else if (BoostCycle == BoostCycle.Held)
         {
-            if (BoostMeterValue >= BoostReleaseWindow.y)
+            if (CurrentGear.IsHeldTooLong(BoostMeterValue))
             {
                 //boost held too long
-                //Debug.Log("Boost Held too long");
-                BoostCycle = BoostCycle.Idle;
+                OnGearFailure();
             }
         }
 
         //check when success will expire
         else if (BoostCycle == BoostCycle.Success)
         {
-            if (BoostMeterValue >= BoostPressWindow.y && BoostMeterValue <= BoostReleaseWindow.x)
+            if (CurrentGear.IsReleasedTooLate(BoostMeterValue))
             {
                 //boost held too long
-                //Debug.Log("Success Expired");
-                BoostCycle = BoostCycle.Idle;
+                OnGearFailure();
+            }
+        }
+
+        //If we are in higher gear, we are allowed to loose them while idling
+        else if (BoostCycle == BoostCycle.Idle && BoostGearIndex > 0)
+        {
+            if (CurrentGear.IsReleasedTooLate(BoostMeterValue))
+            {
+                //boost held too long
+                OnGearFailure();
             }
         }
     }
 
-    private float EvaluateBoostInput(bool isHoldingMouseButton, bool isReleasingMouseButton)
+    private float EvaluateBoostCycleSpeed()
     {       
         
         //boost cycle was done well, we can chill
@@ -172,7 +218,9 @@ public class SpeedBooster : MonoBehaviour
                 Transform Handle = RowSlider.transform.Find("Handle Slide Area").Find("Handle");
                 Handle.GetComponent<Image>().color = BoostInProgress;
             }
-            return MaxSpeed;
+
+            //give a taste of the higher gear speed
+            return GetHigherGearSpeed();
         }
 
         else if (BoostCycle == BoostCycle.Success)
@@ -182,7 +230,7 @@ public class SpeedBooster : MonoBehaviour
                 Transform Handle = RowSlider.transform.Find("Handle Slide Area").Find("Handle");
                 Handle.GetComponent<Image>().color = BoostSuccess;
             }
-            return MaxSpeed;
+            return GetCurrentGearSpeed();
         }
         else if (BoostCycle == BoostCycle.NotRunning)
         {
@@ -191,7 +239,7 @@ public class SpeedBooster : MonoBehaviour
                 Transform Handle = RowSlider.transform.Find("Handle Slide Area").Find("Handle");
                 Handle.GetComponent<Image>().color = BoostOff;
             }
-            return DefaultSpeed;
+            return GetCurrentGearSpeed();
         }
 
         //player borked it, back to basics
@@ -201,7 +249,7 @@ public class SpeedBooster : MonoBehaviour
             Handle.GetComponent<Image>().color = BoostFailed;
         }
 
-        return DefaultSpeed;
+        return GetCurrentGearSpeed();
     }
 
     private void OnBoostMeterComplete()
@@ -209,10 +257,49 @@ public class SpeedBooster : MonoBehaviour
         BoostMeterValue = 0;
         BoostMeterTweener.ChangeStartValue(0.0f);
 
-        //if boost cycle is idle when we finish, stop the cycle
-        if (BoostCycle == BoostCycle.Idle)
+        if (BoostCycle == BoostCycle.HighGearFail)
         {
+            BoostCycle = BoostCycle.Idle;
+        }
+    }
+
+    private BoostGear GetCurrentGear()
+    {
+        return BoostGears[BoostGearIndex];
+    }
+
+    private float GetCurrentGearSpeed()
+    {
+        return GetCurrentGear().MaxSpeed;
+    }
+
+    private float GetHigherGearSpeed()
+    {
+        int index = Mathf.Min(BoostGearIndex + 1, BoostGears.Length - 1);
+
+        return BoostGears[index].MaxSpeed;
+    }
+
+    //move up a gear
+    private void OnGearSuccess()
+    {
+        BoostGearIndex = Mathf.Min(BoostGearIndex + 1, BoostGears.Length - 1);
+
+        BoostCycle = BoostCycle.Success;
+    }
+
+    private void OnGearFailure()
+    {
+        BoostGearIndex = Mathf.Max(BoostGearIndex - 1, 0);
+
+        if (BoostGearIndex == 0)
+        {
+            BoostCycle = BoostCycle.Idle;
             StopCycle();
+        }
+        else
+        {
+            BoostCycle = BoostCycle.HighGearFail;
         }
     }
 }

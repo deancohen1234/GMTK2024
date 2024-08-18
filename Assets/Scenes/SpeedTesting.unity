@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.8556208, g: 0.87064654, b: 0.3901482, a: 1}
+  m_FogColor: {r: 0.5659399, g: 0.94350356, b: 0.87491405, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.001
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.89465165, g: 0.90975416, b: 0.7499202, a: 1}
+  m_AmbientSkyColor: {r: 0.9960178, g: 1, b: 0.7216392, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -132,11 +132,143 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 116748787614175172, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.85730356
+      value: 0.8573036
       objectReference: {fileID: 0}
     - target: {fileID: 116748787614175172, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.5148112
+      value: 0.51481116
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[0].Name
+      value: First Gear
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[1].Name
+      value: Second Gear
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[2].Name
+      value: Third Gear
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[3].Name
+      value: Fourth Gear
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[0].MaxSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[1].MaxSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[2].MaxSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[3].MaxSpeed
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[0].BoostEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[1].BoostEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[2].BoostEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[3].BoostEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[0].BoostPressWindow.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[0].BoostPressWindow.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[1].BoostPressWindow.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[1].BoostPressWindow.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[2].BoostPressWindow.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[2].BoostPressWindow.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[3].BoostPressWindow.x
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[3].BoostPressWindow.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[0].BoostChangeDuration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[1].BoostChangeDuration
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[2].BoostChangeDuration
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[3].BoostChangeDuration
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[0].BoostReleaseWindow.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[0].BoostReleaseWindow.y
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[1].BoostReleaseWindow.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[1].BoostReleaseWindow.y
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[2].BoostReleaseWindow.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[2].BoostReleaseWindow.y
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[3].BoostReleaseWindow.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 135146578303703064, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
+      propertyPath: BoostGears.Array.data[3].BoostReleaseWindow.y
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 196668445304927670, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: m_AnchorMax.x
@@ -162,21 +294,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerPrefab
       objectReference: {fileID: 0}
-    - target: {fileID: 7563027340263840681, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.88153666
-      objectReference: {fileID: 0}
-    - target: {fileID: 7563027340263840681, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.47211555
-      objectReference: {fileID: 0}
     - target: {fileID: 7920292610974045305, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.7625523
       objectReference: {fileID: 0}
     - target: {fileID: 7920292610974045305, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 22.77
+      value: 0.76
       objectReference: {fileID: 0}
     - target: {fileID: 7920292610974045305, guid: ae64a3fdfca36d643a55b715c9853bb6, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1283,7 +1407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DirectionalLight: {fileID: 1869787362}
   Preset: {fileID: 11400000, guid: 2f03c92c69def6e449e962410c2311b5, type: 2}
-  TimeOfDay: 16.69
+  TimeOfDay: 10.81
 --- !u!4 &1301812079
 Transform:
   m_ObjectHideFlags: 0
@@ -1477,7 +1601,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChunkPrefab: {fileID: 423464031127005990, guid: fdad70834c33eec4699f96d10ca13b9f, type: 3}
-  TotalSquareFeet: 1000
+  TotalSquareFeet: 2000
   ChunkOffset: 10
 --- !u!4 &1517566624
 Transform:
@@ -1742,7 +1866,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.52422535, g: 0.52422535, b: 0.52422535, a: 1}
+  m_Color: {r: 0.72236633, g: 0.72236633, b: 0.72236633, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -1801,7 +1925,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869787361}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.08587754, y: 0.1699901, z: -0.9815841, w: 0.014872218}
+  m_LocalRotation: {x: 0.051321156, y: 0.80517125, z: -0.5866031, w: 0.07044341}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
